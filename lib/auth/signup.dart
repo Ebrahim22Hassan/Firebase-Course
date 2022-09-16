@@ -1,0 +1,177 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  var userName, myPassword, myEmail;
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+
+  signUp() async {
+    var formData = formState.currentState;
+    if (formData!.validate()) {
+      formData.save();
+      try {
+        UserCredential credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: myEmail,
+          password: myPassword,
+        );
+        return credential;
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          Navigator.of(context).pop();
+          AwesomeDialog(
+            context: context,
+            body: Text('The password is too weak'),
+          ).show();
+          print('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          Navigator.of(context).pop();
+          AwesomeDialog(
+            context: context,
+            body: Text('The account already exists for that email'),
+          ).show();
+          print('The account already exists for that email.');
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      print('Not Valid');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: formState,
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      prefix: Icon(Icons.person),
+                      hintText: "username",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
+                    ),
+                    onSaved: (value) {
+                      userName = value;
+                    },
+                    validator: (val) {
+                      if (val!.length > 100) {
+                        return "username can't to be larger than 100 letter";
+                      }
+                      if (val.length < 2) {
+                        return "username can't to be less than 2 letter";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20.0),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      prefix: Icon(Icons.mail),
+                      hintText: "mail",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
+                    ),
+                    onSaved: (value) {
+                      myEmail = value;
+                    },
+                    validator: (val) {
+                      if (val!.length > 100) {
+                        return "username can't to be larger than 100 letter";
+                      }
+                      if (val.length < 2) {
+                        return "username can't to be less than 2 letter";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20.0),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      prefix: Icon(Icons.lock),
+                      hintText: "password",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
+                    ),
+                    onSaved: (value) {
+                      myPassword = value;
+                    },
+                    validator: (val) {
+                      if (val!.length > 100) {
+                        return "username can't to be larger than 100 letter";
+                      }
+                      if (val.length < 8) {
+                        return "username can't to be less than 2 letter";
+                      }
+                      return null;
+                    },
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        const Text('If you have account '),
+                        InkWell(
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("login");
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      UserCredential response = await signUp();
+                      if (response != null) {
+                        await FirebaseFirestore.instance
+                            .collection("users")
+                            .add({
+                          "name": userName,
+                          "email": myEmail,
+                        });
+                        Navigator.of(context).pushReplacementNamed("homepage");
+                        print(response.user!.email);
+                      } else {
+                        print('Not Valid');
+                      }
+                    },
+                    child: Text(
+                      'Sign Up',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
