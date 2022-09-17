@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_course/crud/edit_note.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -106,7 +106,9 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 return ListNotes(
                   notes: snapshot.data!.docs[index],
-                  //docId: snapshot.data!.docs[""],
+
+                  /// To get document ID
+                  docId: snapshot.data!.docs[index].id,
                 );
               },
             );
@@ -187,10 +189,13 @@ class ListNotes extends StatelessWidget {
                 ),
                 trailing: IconButton(
                   onPressed: () {
-                    // Navigator.of(context)
-                    //     .push(MaterialPageRoute(builder: (context) {
-                    //   return EditNotes(docid: docId, list: notes);
-                    // }));
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return EditNotes(
+                        docId: docId,
+                        list: notes,
+                      );
+                    }));
                   },
                   icon: Icon(Icons.edit),
                 ),
