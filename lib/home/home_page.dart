@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_course/crud/edit_note.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -104,11 +105,74 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
-                return ListNotes(
-                  notes: snapshot.data!.docs[index],
+                return Dismissible(
+                  // Swipe to delete
+                  key: UniqueKey(),
+                  onDismissed: (_) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text(
+                            "Are you sure you want to delete this note?",
+                            style: TextStyle(
+                              color: Colors.black45,
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("No")),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  ///Delete Note
+                                  await notesRef
+                                      .doc(snapshot.data!.docs[index].id)
+                                      .delete();
 
-                  /// To get document ID
-                  docId: snapshot.data!.docs[index].id,
+                                  ///Delete image as well
+                                  await FirebaseStorage.instance
+                                      .refFromURL(snapshot.data!.docs[index]
+                                          ['imageUrl'])
+                                      .delete();
+
+                                  ///skip alert dialog
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Yes")),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  background: Container(
+                      alignment: Alignment.centerLeft,
+                      color: Colors.red,
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Icon(
+                          Icons.delete_forever,
+                          color: Colors.white,
+                        ),
+                      )),
+                  secondaryBackground: Container(
+                      alignment: Alignment.centerRight,
+                      color: Colors.red,
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Icon(
+                          Icons.delete_rounded,
+                          color: Colors.white,
+                        ),
+                      )),
+                  child: ListNotes(
+                    notes: snapshot.data!.docs[index],
+
+                    /// To get document ID
+                    docId: snapshot.data!.docs[index].id,
+                  ),
                 );
               },
             );
@@ -118,40 +182,6 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-      // body: Container(
-      //   child: FutureBuilder(
-      //       future: notesref
-      //           .where("userid",
-      //           isEqualTo: FirebaseAuth.instance.currentUser.uid)
-      //           .get(),
-      //       builder: (context, snapshot) {
-      //         if (snapshot.hasData) {
-      //           return ListView.builder(
-      //               itemCount: snapshot.data.docs.length,
-      //               itemBuilder: (context, i) {
-      //                 return Dismissible(
-      //                     onDismissed: (diretion) async {
-      //                       await notesref
-      //                           .doc(snapshot.data.docs[i].id)
-      //                           .delete();
-      //                       await FirebaseStorage.instance
-      //                           .refFromURL(snapshot.data.docs[i]['imageurl'])
-      //                           .delete()
-      //                           .then((value) {
-      //                         print("=================================");
-      //                         print("Delete");
-      //                       });
-      //                     },
-      //                     key: UniqueKey(),
-      //                     child: ListNotes(
-      //                       notes: snapshot.data.docs[i],
-      //                       docid: snapshot.data.docs[i].id,
-      //                     ));
-      //               });
-      //         }
-      //         return Center(child: CircularProgressIndicator());
-      //       }),
-      // ),
     );
   }
 }
@@ -159,7 +189,9 @@ class _HomePageState extends State<HomePage> {
 class ListNotes extends StatelessWidget {
   final dynamic notes;
   final dynamic docId;
+
   const ListNotes({super.key, this.notes, this.docId});
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
