@@ -248,7 +248,7 @@ class ListNotes extends StatelessWidget {
                         ]),
                     child: const Icon(
                       Icons.edit,
-                      size: 28,
+                      size: 27,
                     ),
                   ),
                   color: Colors.blue,
