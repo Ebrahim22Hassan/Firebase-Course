@@ -51,7 +51,7 @@ class _EditNotesState extends State<EditNotes> {
         }).then((value) {
           Navigator.of(context).pushNamed("homepage");
         }).catchError((e) {
-          print("$e");
+          print(e);
         });
       }
     } else {

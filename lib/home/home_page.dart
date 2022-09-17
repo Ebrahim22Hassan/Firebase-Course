@@ -215,10 +215,16 @@ class ListNotes extends StatelessWidget {
             Expanded(
               flex: 3,
               child: ListTile(
-                title: Text("${notes['title']}"),
+                title: Text(
+                  "${notes['title']}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 subtitle: Text(
                   "${notes['note']}",
                   style: const TextStyle(fontSize: 14),
+                  maxLines: 2,
                 ),
                 trailing: IconButton(
                   onPressed: () {
@@ -230,7 +236,22 @@ class ListNotes extends StatelessWidget {
                       );
                     }));
                   },
-                  icon: Icon(Icons.edit),
+                  icon: Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.rectangle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 0.1,
+                          ),
+                        ]),
+                    child: const Icon(
+                      Icons.edit,
+                      size: 28,
+                    ),
+                  ),
+                  color: Colors.blue,
                 ),
               ),
             )
