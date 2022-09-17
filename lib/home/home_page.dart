@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_course/crud/edit_note.dart';
+import 'package:firebase_course/crud/view_note.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,11 +23,11 @@ class _HomePageState extends State<HomePage> {
 
   var fbm = FirebaseMessaging.instance;
 
-  initalMessage() async {
+  initialMessage() async {
     var message = await FirebaseMessaging.instance.getInitialMessage();
 
     if (message != null) {
-      Navigator.of(context).pushNamed("addnotes");
+      Navigator.of(context).pushNamed("addNotes");
     }
   }
 
@@ -56,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     requestPermission();
-    initalMessage();
+    initialMessage();
     fbm.getToken().then((token) {
       print("=================== Token ==================");
       print(token);
@@ -196,9 +197,9 @@ class ListNotes extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        //   return ViewNote(notes: notes);
-        // }));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return ViewNotes(notes: notes);
+        }));
       },
       child: Card(
         child: Row(

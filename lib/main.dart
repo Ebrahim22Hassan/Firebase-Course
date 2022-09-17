@@ -33,12 +33,12 @@ class MyApp extends StatelessWidget {
             headline5: TextStyle(fontSize: 30, color: Colors.blue),
             bodyText2: TextStyle(fontSize: 20, color: Colors.black),
           )),
-      home: isLogin == false ? Login() : HomePage(),
+      home: isLogin == false ? Login() : const HomePage(),
       //const Test(),
       routes: {
         "login": (context) => Login(),
-        "homepage": (context) => HomePage(),
-        "signup": (context) => SignUp(),
+        "homepage": (context) => const HomePage(),
+        "signup": (context) => const SignUp(),
         "addNotes": (context) => AddNotes(),
       },
     );
