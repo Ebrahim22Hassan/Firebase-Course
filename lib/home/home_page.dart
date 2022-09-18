@@ -227,7 +227,7 @@ class ListNotes extends StatelessWidget {
             child: Image.network(
               "${notes['imageUrl']}",
               fit: BoxFit.fill,
-              height: 120,
+              height: 100,
             ),
           ),
           Expanded(
