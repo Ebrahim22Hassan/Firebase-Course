@@ -5,6 +5,7 @@ import 'package:firebase_course/crud/view_note.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -81,7 +82,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomePage'),
+        automaticallyImplyLeading: false,
+        title: const Padding(
+          padding: EdgeInsets.all(50.0),
+          child: Text('Home Page'),
+        ),
         actions: [
           IconButton(
               icon: const Icon(Icons.exit_to_app),
@@ -106,68 +111,86 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
-                return Dismissible(
-                  // Swipe to delete
-                  key: UniqueKey(),
-                  onDismissed: (_) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text(
-                            "Are you sure you want to delete this note?",
-                            style: TextStyle(
-                              color: Colors.black45,
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("No")),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  ///Delete Note
-                                  await notesRef
-                                      .doc(snapshot.data!.docs[index].id)
-                                      .delete();
+                return Slidable(
+                  startActionPane: ActionPane(
+                    extentRatio: 0.6,
+                    motion: const StretchMotion(),
+                    children: [
+                      SlidableAction(
+                          backgroundColor: Colors.black12,
+                          label: 'close',
+                          icon: Icons.close,
+                          onPressed: (_) {}),
+                      SlidableAction(
+                          backgroundColor: Colors.red,
+                          label: 'delete',
+                          icon: Icons.delete,
+                          onPressed: (_) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text(
+                                    "Delete note?",
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("No")),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          ///Delete Note
+                                          await notesRef
+                                              .doc(
+                                                  snapshot.data!.docs[index].id)
+                                              .delete();
 
-                                  ///Delete image as well
-                                  await FirebaseStorage.instance
-                                      .refFromURL(snapshot.data!.docs[index]
-                                          ['imageUrl'])
-                                      .delete();
+                                          ///Delete image as well
+                                          await FirebaseStorage.instance
+                                              .refFromURL(snapshot.data!
+                                                  .docs[index]['imageUrl'])
+                                              .delete();
 
-                                  ///skip alert dialog
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("Yes")),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  background: Container(
-                      alignment: Alignment.centerLeft,
-                      color: Colors.red,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Icon(
-                          Icons.delete_forever,
-                          color: Colors.white,
-                        ),
-                      )),
-                  secondaryBackground: Container(
-                      alignment: Alignment.centerRight,
-                      color: Colors.red,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Icon(
-                          Icons.delete_rounded,
-                          color: Colors.white,
-                        ),
-                      )),
+                                          ///skip alert dialog
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Yes")),
+                                  ],
+                                );
+                              },
+                            );
+                          }),
+                    ],
+                  ),
+                  endActionPane: ActionPane(
+                    extentRatio: 0.6,
+                    motion: const StretchMotion(),
+                    children: [
+                      SlidableAction(
+                          backgroundColor: Colors.green,
+                          label: 'edit',
+                          icon: Icons.edit,
+                          onPressed: (_) {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return EditNotes(
+                                docId: snapshot.data!.docs[index].id,
+                                list: snapshot.data!.docs[index],
+                              );
+                            }));
+                          }),
+                      SlidableAction(
+                          backgroundColor: Colors.black12,
+                          label: 'close',
+                          icon: Icons.close,
+                          onPressed: (_) {}),
+                    ],
+                  ),
                   child: ListNotes(
                     notes: snapshot.data!.docs[index],
 
@@ -175,6 +198,7 @@ class _HomePageState extends State<HomePage> {
                     docId: snapshot.data!.docs[index].id,
                   ),
                 );
+                // );
               },
             );
           }
@@ -195,47 +219,41 @@ class ListNotes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return ViewNotes(notes: notes);
-        }));
-      },
-      child: Card(
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Image.network(
-                "${notes['imageUrl']}",
-                fit: BoxFit.fill,
-                height: 80,
+    return Card(
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Image.network(
+              "${notes['imageUrl']}",
+              fit: BoxFit.fill,
+              height: 120,
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: ListTile(
+              title: Text("${notes['title']}"),
+              subtitle: Text(
+                "${notes['note']}",
+                style: const TextStyle(fontSize: 14),
+                maxLines: 2,
+              ),
+              trailing: IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return ViewNotes(notes: notes);
+                  }));
+                },
+                icon: const Icon(
+                  Icons.event_note,
+                  size: 28,
+                ),
               ),
             ),
-            Expanded(
-              flex: 3,
-              child: ListTile(
-                title: Text("${notes['title']}"),
-                subtitle: Text(
-                  "${notes['note']}",
-                  style: const TextStyle(fontSize: 14),
-                ),
-                trailing: IconButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return EditNotes(
-                        docId: docId,
-                        list: notes,
-                      );
-                    }));
-                  },
-                  icon: Icon(Icons.edit),
-                ),
-              ),
-            )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
