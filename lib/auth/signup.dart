@@ -14,6 +14,8 @@ class _SignUpState extends State<SignUp> {
   var userName, myPassword, myEmail;
   GlobalKey<FormState> formState = GlobalKey<FormState>();
 
+  bool _obscureText = true;
+
   signUp() async {
     var formData = formState.currentState;
     if (formData!.validate()) {
@@ -106,13 +108,23 @@ class _SignUpState extends State<SignUp> {
                   ),
                   const SizedBox(height: 20.0),
                   TextFormField(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       prefix: Icon(Icons.lock),
                       hintText: "password",
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderSide: BorderSide(width: 1),
                       ),
+                      prefixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          icon: Icon(_obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility)),
                     ),
+                    obscureText: _obscureText,
                     onSaved: (value) {
                       myPassword = value;
                     },
