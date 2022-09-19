@@ -46,6 +46,7 @@ dependencies:
   dropdown_search: ^5.0.2
   google_sign_in: ^5.4.1
   flutter_slidable: ^2.0.0
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:

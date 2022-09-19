@@ -6,6 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
+
+import '../crud/add_note.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -100,7 +103,12 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Theme.of(context).primaryColor,
           child: const Icon(Icons.add),
           onPressed: () {
-            Navigator.of(context).pushNamed("addNotes");
+            //Navigator.of(context).pushNamed("addNotes");
+            Get.to(
+              () => AddNotes(),
+              transition: Transition.downToUp,
+              duration: const Duration(milliseconds: 500),
+            );
           }),
       body: FutureBuilder<QuerySnapshot>(
         future: notesRef
@@ -176,13 +184,14 @@ class _HomePageState extends State<HomePage> {
                           label: 'edit',
                           icon: Icons.edit,
                           onPressed: (_) {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return EditNotes(
+                            Get.to(
+                              () => EditNotes(
                                 docId: snapshot.data!.docs[index].id,
                                 list: snapshot.data!.docs[index],
-                              );
-                            }));
+                              ),
+                              transition: Transition.rightToLeftWithFade,
+                              duration: const Duration(milliseconds: 700),
+                            );
                           }),
                       SlidableAction(
                           backgroundColor: Colors.black12,
@@ -241,10 +250,17 @@ class ListNotes extends StatelessWidget {
               ),
               trailing: IconButton(
                 onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ViewNotes(notes: notes);
-                  }));
+                  // Navigator.of(context)
+                  //     .push(MaterialPageRoute(builder: (context) {
+                  //   return ViewNotes(notes: notes);
+                  // }));
+                  Get.to(
+                    () => ViewNotes(
+                      notes: notes,
+                    ),
+                    transition: Transition.zoom,
+                    duration: const Duration(milliseconds: 500),
+                  );
                 },
                 icon: const Icon(
                   Icons.event_note,

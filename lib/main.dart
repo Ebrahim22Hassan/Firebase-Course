@@ -6,6 +6,7 @@ import 'package:firebase_course/crud/add_note.dart';
 import 'package:firebase_course/home/home_page.dart';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 bool? isLogin;
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
           primarySwatch: Colors.blue,
