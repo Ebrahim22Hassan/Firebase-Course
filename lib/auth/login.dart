@@ -1,8 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_course/auth/signup.dart';
 import 'package:firebase_course/components/alert.dart';
+import 'package:firebase_course/home/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
@@ -120,8 +122,13 @@ class _LoginState extends State<Login> {
                             const Text("If you haven't account "),
                             InkWell(
                               onTap: () {
-                                Navigator.of(context)
-                                    .pushReplacementNamed("signup");
+                                // Navigator.of(context)
+                                //     .pushReplacementNamed("signup");
+                                Get.to(
+                                  () => const SignUp(),
+                                  transition: Transition.rightToLeft,
+                                  duration: const Duration(seconds: 1),
+                                );
                               },
                               child: const Text(
                                 "Click Here",
@@ -134,8 +141,13 @@ class _LoginState extends State<Login> {
                       onPressed: () async {
                         var user = await signIn();
                         if (user != null) {
-                          Navigator.of(context)
-                              .pushReplacementNamed("homepage");
+                          // Navigator.of(context)
+                          //     .pushReplacementNamed("homepage");
+                          Get.to(
+                            () => const HomePage(),
+                            transition: Transition.circularReveal,
+                            duration: const Duration(seconds: 2),
+                          );
                         }
                       },
                       child: Text(

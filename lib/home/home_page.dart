@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_course/auth/login.dart';
 import 'package:firebase_course/crud/edit_note.dart';
 import 'package:firebase_course/crud/view_note.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -95,7 +96,12 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.exit_to_app),
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushReplacementNamed("login");
+                //Navigator.of(context).pushReplacementNamed("login");
+                Get.to(
+                  () => Login(),
+                  transition: Transition.circularReveal,
+                  duration: const Duration(seconds: 2),
+                );
               })
         ],
       ),
@@ -152,20 +158,22 @@ class _HomePageState extends State<HomePage> {
                                         child: const Text("No")),
                                     ElevatedButton(
                                         onPressed: () async {
-                                          ///Delete Note
-                                          await notesRef
-                                              .doc(
-                                                  snapshot.data!.docs[index].id)
-                                              .delete();
+                                          setState(() {
+                                            ///Delete Note
+                                            notesRef
+                                                .doc(snapshot
+                                                    .data!.docs[index].id)
+                                                .delete();
 
-                                          ///Delete image as well
-                                          await FirebaseStorage.instance
-                                              .refFromURL(snapshot.data!
-                                                  .docs[index]['imageUrl'])
-                                              .delete();
+                                            ///Delete image as well
+                                            FirebaseStorage.instance
+                                                .refFromURL(snapshot.data!
+                                                    .docs[index]['imageUrl'])
+                                                .delete();
 
-                                          ///skip alert dialog
-                                          Navigator.pop(context);
+                                            ///skip alert dialog
+                                            Navigator.pop(context);
+                                          });
                                         },
                                         child: const Text("Yes")),
                                   ],

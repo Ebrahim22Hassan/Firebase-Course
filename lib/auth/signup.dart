@@ -1,7 +1,9 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_course/auth/login.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -32,14 +34,14 @@ class _SignUpState extends State<SignUp> {
           Navigator.of(context).pop();
           AwesomeDialog(
             context: context,
-            body: Text('The password is too weak'),
+            body: const Text('The password is too weak'),
           ).show();
           print('The password provided is too weak.');
         } else if (e.code == 'email-already-in-use') {
           Navigator.of(context).pop();
           AwesomeDialog(
             context: context,
-            body: Text('The account already exists for that email'),
+            body: const Text('The account already exists for that email'),
           ).show();
           print('The account already exists for that email.');
         }
@@ -109,7 +111,7 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(height: 20.0),
                   TextFormField(
                     decoration: InputDecoration(
-                      prefix: Icon(Icons.lock),
+                      prefix: const Icon(Icons.lock),
                       hintText: "password",
                       border: const OutlineInputBorder(
                         borderSide: BorderSide(width: 1),
@@ -151,7 +153,12 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                           onTap: () {
-                            Navigator.of(context).pushNamed("login");
+                            //Navigator.of(context).pushNamed("login");
+                            Get.to(
+                              () => Login(),
+                              transition: Transition.leftToRight,
+                              duration: const Duration(seconds: 1),
+                            );
                           },
                         ),
                       ],
