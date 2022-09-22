@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     print(user!.email);
   }
 
-  var fbm = FirebaseMessaging.instance;
+  FirebaseMessaging fbm = FirebaseMessaging.instance;
 
   initialMessage() async {
     var message = await FirebaseMessaging.instance.getInitialMessage();
@@ -36,46 +36,53 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  requestPermission() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
-    } else {
-      print('User declined or has not accepted permission');
-    }
-  }
+  /// permit initialMessage For IOS only
+  // requestPermission() async {
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: false,
+  //     criticalAlert: false,
+  //     provisional: false,
+  //     sound: true,
+  //   );
+  //
+  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //     print('User granted permission');
+  //   } else if (settings.authorizationStatus ==
+  //       AuthorizationStatus.provisional) {
+  //     print('User granted provisional permission');
+  //   } else {
+  //     print('User declined or has not accepted permission');
+  //   }
+  // }
 
   @override
   void initState() {
-    requestPermission();
+    // requestPermission();
+    ///Action when app is closed (Terminated)
     initialMessage();
+
+    ///get Token (mob ID)
     fbm.getToken().then((token) {
       print("=================== Token ==================");
       print(token);
       print("====================================");
     });
-
     FirebaseMessaging.onMessage.listen((event) {
       print(
           "===================== data Notification ==============================");
+      print(event.notification!.body);
 
       //  AwesomeDialog(context: context , title: "title" , body: Text("${event.notification.body}"))..show() ;
-
-      Navigator.of(context).pushNamed("addNotes");
+      //Navigator.of(context).pushNamed("addNotes");
+      ///Action when app is opened
+      // FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      //   Navigator.of(context).pushNamed("addNotes");
+      // });
     });
 
     getUser();

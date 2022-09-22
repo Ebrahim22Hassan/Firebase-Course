@@ -4,15 +4,23 @@ import 'package:firebase_course/auth/login.dart';
 import 'package:firebase_course/auth/signup.dart';
 import 'package:firebase_course/crud/add_note.dart';
 import 'package:firebase_course/home/home_page.dart';
+import 'package:firebase_course/test.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 bool? isLogin;
+Future backgroundMessage(RemoteMessage message) async {
+  print("${message.notification!.body}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  ///Background notification (work on Terminated mode as well)
+  FirebaseMessaging.onBackgroundMessage(backgroundMessage);
 
   /// Check if the user logged in before or not
   var signedIn = FirebaseAuth.instance.currentUser;
@@ -26,6 +34,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -34,8 +43,8 @@ class MyApp extends StatelessWidget {
             headline5: TextStyle(fontSize: 30, color: Colors.blue),
             bodyText2: TextStyle(fontSize: 20, color: Colors.black),
           )),
-      home: isLogin == false ? Login() : const HomePage(),
-      //const Test(),
+      home: //isLogin == false ? Login() : const HomePage(),
+          const Test(),
       routes: {
         "login": (context) => Login(),
         "homepage": (context) => const HomePage(),

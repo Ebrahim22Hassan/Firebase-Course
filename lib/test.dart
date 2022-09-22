@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -161,10 +163,59 @@ class _TestState extends State<Test> {
   //   });
   //   print(users);
   // }
+  var serverKey =
+      "AAAA0F2lrZk:APA91bEajJ70A0TxFJsKZj7JTgdI73y9l3njEzFqiFKN29HLajZQmIuA1plkaPEwS55I6yIxkE4BfYgATpXOKt0x_MfaVIBwGPVZcUVbPvTfgLAHTAl5uj0Hl-oe16v8pJ5KqgrQR9pl";
+
+  ///Notification
+  sendNotify(String title, String body, String id) async {
+    await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverKey',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'body': body.toString(),
+            'title': title.toString(),
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'id': id.toString(),
+            'name': "EEE",
+            'lastName': "EEEQQ",
+          },
+
+          ///send to Token
+          //'to': await FirebaseMessaging.instance.getToken(),
+          ///send to Topic
+          'to': "/topics/weather",
+        },
+      ),
+    );
+  }
+
+  getMessage() {
+    FirebaseMessaging.onMessage.listen((event) {
+      print(event.notification!.title);
+      print(event.notification!.body);
+      print(event.data['name']);
+      print(event.data['lastName']);
+    });
+  }
+
+  getToken() {
+    FirebaseMessaging.instance.getToken().then((token) {
+      print(token);
+    });
+  }
 
   @override
   void initState() {
-    getImageNames();
+    //getImageNames();
+    //getToken();
+    getMessage();
     super.initState();
   }
 
@@ -284,11 +335,30 @@ class _TestState extends State<Test> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                //await uploadImages();
-              },
-              child: Text('Press'),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    //await uploadImages();
+                    await sendNotify("Hello", "HEEEESDSA", "1");
+                  },
+                  child: Text('Press'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await FirebaseMessaging.instance
+                        .subscribeToTopic('weather');
+                  },
+                  child: const Text('Subscribe Topic'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await FirebaseMessaging.instance
+                        .unsubscribeFromTopic('weather');
+                  },
+                  child: const Text('UnSubscribe from Topic'),
+                ),
+              ],
             ),
           ),
 
