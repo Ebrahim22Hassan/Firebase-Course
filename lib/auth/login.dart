@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Login extends StatefulWidget {
-  Login({Key? key}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  var myPassword, myEmail;
+  dynamic myPassword, myEmail;
   GlobalKey<FormState> formState = GlobalKey<FormState>();
 
   bool _obscureText = true;
@@ -48,7 +48,7 @@ class _LoginState extends State<Login> {
         }
       }
     } else {
-      print("Not Vaild");
+      debugPrint("Not Valid");
     }
   }
 

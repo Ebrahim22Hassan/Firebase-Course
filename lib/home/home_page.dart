@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   getUser() {
     var user = FirebaseAuth.instance.currentUser;
-    print(user!.email);
+    debugPrint(user!.email);
   }
 
   FirebaseMessaging fbm = FirebaseMessaging.instance;
@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
     var message = await FirebaseMessaging.instance.getInitialMessage();
 
     if (message != null) {
+      if (!mounted) return;
       Navigator.of(context).pushNamed("addNotes");
     }
   }
@@ -51,12 +52,12 @@ class _HomePageState extends State<HomePage> {
   //   );
   //
   //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //     print('User granted permission');
+  //     debugPrint('User granted permission');
   //   } else if (settings.authorizationStatus ==
   //       AuthorizationStatus.provisional) {
-  //     print('User granted provisional permission');
+  //     debugPrint('User granted provisional permission');
   //   } else {
-  //     print('User declined or has not accepted permission');
+  //     debugPrint('User declined or has not accepted permission');
   //   }
   // }
 
@@ -68,14 +69,14 @@ class _HomePageState extends State<HomePage> {
 
     ///get Token (mob ID)
     fbm.getToken().then((token) {
-      print("=================== Token ==================");
-      print(token);
-      print("====================================");
+      debugPrint("=================== Token ==================");
+      debugPrint(token);
+      debugPrint("====================================");
     });
     FirebaseMessaging.onMessage.listen((event) {
-      print(
+      debugPrint(
           "===================== data Notification ==============================");
-      print(event.notification!.body);
+      debugPrint(event.notification!.body);
 
       //  AwesomeDialog(context: context , title: "title" , body: Text("${event.notification.body}"))..show() ;
       //Navigator.of(context).pushNamed("addNotes");
@@ -105,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                 await FirebaseAuth.instance.signOut();
                 //Navigator.of(context).pushReplacementNamed("login");
                 Get.to(
-                  () => Login(),
+                  () => const Login(),
                   transition: Transition.circularReveal,
                   duration: const Duration(seconds: 2),
                 );
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             //Navigator.of(context).pushNamed("addNotes");
             Get.to(
-              () => AddNotes(),
+              () => const AddNotes(),
               transition: Transition.downToUp,
               duration: const Duration(milliseconds: 500),
             );

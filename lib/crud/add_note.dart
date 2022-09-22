@@ -10,10 +10,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class AddNotes extends StatefulWidget {
-  AddNotes({Key? key}) : super(key: key);
+  const AddNotes({Key? key}) : super(key: key);
 
   @override
-  _AddNotesState createState() => _AddNotesState();
+  State<AddNotes> createState() => _AddNotesState();
 }
 
 class _AddNotesState extends State<AddNotes> {
@@ -58,7 +58,7 @@ class _AddNotesState extends State<AddNotes> {
       }).then((value) {
         Navigator.of(context).pushNamed("homepage");
       }).catchError((e) {
-        print("$e");
+        debugPrint("$e");
       });
     }
   }
@@ -69,8 +69,7 @@ class _AddNotesState extends State<AddNotes> {
       appBar: AppBar(
         title: const Text('Add Note'),
       ),
-      body: Container(
-          child: Column(
+      body: Column(
         children: [
           Form(
               key: formState,
@@ -121,7 +120,7 @@ class _AddNotesState extends State<AddNotes> {
                   onPressed: () {
                     showBottomSheet(context);
                   },
-                  child: Text("Add Image For Note"),
+                  child: const Text("Add Image For Note"),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -134,7 +133,7 @@ class _AddNotesState extends State<AddNotes> {
                 )
               ]))
         ],
-      )),
+      ),
     );
   }
 
@@ -164,13 +163,13 @@ class _AddNotesState extends State<AddNotes> {
                       ref = FirebaseStorage.instance
                           .ref("images")
                           .child(imageName);
-
+                      if (!mounted) return;
                       Navigator.of(context).pop();
                     }
                   },
                   child: Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: Row(
                         children: const [
                           Icon(
@@ -197,7 +196,7 @@ class _AddNotesState extends State<AddNotes> {
                       ref = FirebaseStorage.instance
                           .ref("images")
                           .child(imageName);
-
+                      if (!mounted) return;
                       Navigator.of(context).pop();
                     }
                   },

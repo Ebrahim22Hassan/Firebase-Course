@@ -10,10 +10,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 class EditNotes extends StatefulWidget {
   final dynamic docId;
   final dynamic list;
-  EditNotes({Key? key, this.docId, this.list}) : super(key: key);
+  const EditNotes({Key? key, this.docId, this.list}) : super(key: key);
 
   @override
-  _EditNotesState createState() => _EditNotesState();
+  State<EditNotes> createState() => _EditNotesState();
 }
 
 class _EditNotesState extends State<EditNotes> {
@@ -51,7 +51,7 @@ class _EditNotesState extends State<EditNotes> {
         }).then((value) {
           Navigator.of(context).pushNamed("homepage");
         }).catchError((e) {
-          print("$e");
+          debugPrint("$e");
         });
       }
     } else {
@@ -76,7 +76,7 @@ class _EditNotesState extends State<EditNotes> {
         }).then((value) {
           Navigator.of(context).pushNamed("homepage");
         }).catchError((e) {
-          print("$e");
+          debugPrint("$e");
         });
       }
     }
@@ -88,8 +88,7 @@ class _EditNotesState extends State<EditNotes> {
       appBar: AppBar(
         title: const Text('Edit Note'),
       ),
-      body: Container(
-          child: Column(
+      body: Column(
         children: [
           Form(
               key: formState,
@@ -142,7 +141,7 @@ class _EditNotesState extends State<EditNotes> {
                   onPressed: () {
                     showBottomSheet(context);
                   },
-                  child: Text("Edit Image"),
+                  child: const Text("Edit Image"),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -155,7 +154,7 @@ class _EditNotesState extends State<EditNotes> {
                 )
               ]))
         ],
-      )),
+      ),
     );
   }
 
@@ -185,13 +184,13 @@ class _EditNotesState extends State<EditNotes> {
                       ref = FirebaseStorage.instance
                           .ref("images")
                           .child(imageName);
-
+                      if (!mounted) return;
                       Navigator.of(context).pop();
                     }
                   },
                   child: Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: Row(
                         children: const [
                           Icon(
@@ -218,7 +217,7 @@ class _EditNotesState extends State<EditNotes> {
                       ref = FirebaseStorage.instance
                           .ref("images")
                           .child(imageName);
-
+                      if (!mounted) return;
                       Navigator.of(context).pop();
                     }
                   },

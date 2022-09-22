@@ -23,16 +23,16 @@ class _TestState extends State<Test> {
   //getData() async {
   // FirebaseFirestore.instance.collection("users").get().then((value) {
   //   for (var element in value.docs) {
-  //     print(element.data());
-  //     print("=================");
+  //     debugPrint(element.data());
+  //     debugPrint("=================");
   //   }
   // });
   //   var doc = FirebaseFirestore.instance
   //       .collection('users')
   //       .doc("mcJlybdhWW5VXoKDoIe2");
   //   await doc.get().then((value) {
-  //     print(value.id);
-  //     print("=================");
+  //     debugPrint(value.id);
+  //     debugPrint("=================");
   //   });
   // }
 
@@ -42,12 +42,12 @@ class _TestState extends State<Test> {
   //       FirebaseFirestore.instance.collection("users");
   //   await usersref.get().then((value) {
   //     value.docs.forEach((element) {
-  //       print((element.data() as Map)[
+  //       debugPrint((element.data() as Map)[
   //           'name']); // as Map => because cannot call an indexer [] on an Object.
-  //       print((element.data() as Map)['age']);
+  //       debugPrint((element.data() as Map)['age']);
   //
-  //       print((element.data() as Map)['phone']); //
-  //       print("======================");
+  //       debugPrint((element.data() as Map)['phone']); //
+  //       debugPrint("======================");
   //     });
   //   });
   // }
@@ -56,9 +56,9 @@ class _TestState extends State<Test> {
   // getData() async {
   //   FirebaseFirestore.instance.collection("users").snapshots().listen((event) {
   //     event.docs.forEach((element) {
-  //       print((element.data())['name']);
-  //       print((element.data())['age']);
-  //       print('========================');
+  //       debugPrint((element.data())['name']);
+  //       debugPrint((element.data())['age']);
+  //       debugPrint('========================');
   //     });
   //   });
   // }
@@ -92,10 +92,10 @@ class _TestState extends State<Test> {
   //     "age": "37",
   //     "phone": "554444",
   //   }).then((value) {
-  //     print("deleted");
+  //     debugPrint("deleted");
   //   }).catchError((e) {
-  //     print("============");
-  //     print("Error: $e");
+  //     debugPrint("============");
+  //     debugPrint("Error: $e");
   //   });
   // Method 2 (SET & SetOptions)
   //   usersref.doc("9876").set(
@@ -123,10 +123,10 @@ class _TestState extends State<Test> {
   //   FirebaseFirestore.instance.runTransaction((transaction) async {
   //     DocumentSnapshot docSnap = await transaction.get(docref);
   //     if (docSnap.exists) {
-  //       print("EXIST");
+  //       debugPrint("EXIST");
   //       transaction.update(docref, {"name": "YYYE"});
   //     } else {
-  //       print("DOESN'T EXIST");
+  //       debugPrint("DOESN'T EXIST");
   //     }
   //   });
   // }
@@ -161,7 +161,7 @@ class _TestState extends State<Test> {
   //       users.add(element.data());
   //     });
   //   });
-  //   print(users);
+  //   debugPrint(users);
   // }
   var serverKey =
       "AAAA0F2lrZk:APA91bEajJ70A0TxFJsKZj7JTgdI73y9l3njEzFqiFKN29HLajZQmIuA1plkaPEwS55I6yIxkE4BfYgATpXOKt0x_MfaVIBwGPVZcUVbPvTfgLAHTAl5uj0Hl-oe16v8pJ5KqgrQR9pl";
@@ -198,16 +198,16 @@ class _TestState extends State<Test> {
 
   getMessage() {
     FirebaseMessaging.onMessage.listen((event) {
-      print(event.notification!.title);
-      print(event.notification!.body);
-      print(event.data['name']);
-      print(event.data['lastName']);
+      debugPrint(event.notification!.title);
+      debugPrint(event.notification!.body);
+      debugPrint(event.data['name']);
+      debugPrint(event.data['lastName']);
     });
   }
 
   getToken() {
     FirebaseMessaging.instance.getToken().then((token) {
-      print(token);
+      debugPrint(token);
     });
   }
 
@@ -219,7 +219,6 @@ class _TestState extends State<Test> {
     super.initState();
   }
 
-  @override
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -248,17 +247,17 @@ class _TestState extends State<Test> {
   //   if (imgPicked != null) {
   //     file = File(imgPicked.path);
   //     //var imgName = basename(imgPicked.path);
-  //     print(imgPicked.path);
-  //     print("======================");
+  //     debugPrint(imgPicked.path);
+  //     debugPrint("======================");
   //
   //     //Start Upload
   //     var storageRef = FirebaseStorage.instance.ref("images/${imgPicked.name}");
   //     await storageRef.putFile(file!);
   //     var imgUrl = storageRef.getDownloadURL();
-  //     print("url: $imgUrl");
+  //     debugPrint("url: $imgUrl");
   //     //End Upload
   //   } else {
-  //     print('No Img');
+  //     debugPrint('No Img');
   //   }
   // }
 
@@ -266,18 +265,18 @@ class _TestState extends State<Test> {
   getImageNames() async {
     var ref = await FirebaseStorage.instance
         .ref("images")
-        .list(ListOptions(maxResults: 2));
+        .list(const ListOptions(maxResults: 2));
     //get Image name
     ref.items.forEach((element) {
-      print(element.name);
-      print(element.fullPath);
-      print('==================');
+      debugPrint(element.name);
+      debugPrint(element.fullPath);
+      debugPrint('==================');
     });
 
     ///get Folder name
     // ref.prefixes.forEach((element) {
-    //   print(element.name);
-    //   print('==================');
+    //   debugPrint(element.name);
+    //   debugPrint('==================');
     // });
   }
 
@@ -342,7 +341,7 @@ class _TestState extends State<Test> {
                     //await uploadImages();
                     await sendNotify("Hello", "HEEEESDSA", "1");
                   },
-                  child: Text('Press'),
+                  child: const Text('Press'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -374,12 +373,12 @@ class _TestState extends State<Test> {
           //         );
           //       } on FirebaseAuthException catch (e) {
           //         if (e.code == 'weak-password') {
-          //           print('The password provided is too weak.');
+          //           debugPrint('The password provided is too weak.');
           //         } else if (e.code == 'email-already-in-use') {
-          //           print('The account already exists for that email.');
+          //           debugPrint('The account already exists for that email.');
           //         }
           //       } catch (e) {
-          //         print(e);
+          //         debugPrint(e);
           //       }
           //     },
           //     child: const Text('Create'),
@@ -398,12 +397,12 @@ class _TestState extends State<Test> {
           //         );
           //       } on FirebaseAuthException catch (e) {
           //         if (e.code == 'user-not-found') {
-          //           print('No user found for that email.');
+          //           debugPrint('No user found for that email.');
           //         } else if (e.code == 'wrong-password') {
-          //           print('Wrong password provided for that user.');
+          //           debugPrint('Wrong password provided for that user.');
           //         }
           //       }
-          //       print(userCredential);
+          //       debugPrint(userCredential);
           //
           //       /// Email Verification
           //       // if (FirebaseAuth.instance.currentUser!.emailVerified ==
@@ -421,7 +420,7 @@ class _TestState extends State<Test> {
           //   child: ElevatedButton(
           //     onPressed: () async {
           //       UserCredential cred = await signInWithGoogle();
-          //       print(cred);
+          //       debugPrint(cred);
           //     },
           //     child: const Text('Google Sign in'),
           //   ),

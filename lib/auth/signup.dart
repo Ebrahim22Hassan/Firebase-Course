@@ -13,7 +13,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  var userName, myPassword, myEmail;
+  dynamic userName, myPassword, myEmail;
   GlobalKey<FormState> formState = GlobalKey<FormState>();
 
   bool _obscureText = true;
@@ -36,20 +36,20 @@ class _SignUpState extends State<SignUp> {
             context: context,
             body: const Text('The password is too weak'),
           ).show();
-          print('The password provided is too weak.');
+          debugPrint('The password provided is too weak.');
         } else if (e.code == 'email-already-in-use') {
           Navigator.of(context).pop();
           AwesomeDialog(
             context: context,
             body: const Text('The account already exists for that email'),
           ).show();
-          print('The account already exists for that email.');
+          debugPrint('The account already exists for that email.');
         }
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
       }
     } else {
-      print('Not Valid');
+      debugPrint('Not Valid');
     }
   }
 
@@ -155,7 +155,7 @@ class _SignUpState extends State<SignUp> {
                           onTap: () {
                             //Navigator.of(context).pushNamed("login");
                             Get.to(
-                              () => Login(),
+                              () => const Login(),
                               transition: Transition.leftToRight,
                               duration: const Duration(seconds: 1),
                             );
@@ -174,10 +174,11 @@ class _SignUpState extends State<SignUp> {
                           "name": userName,
                           "email": myEmail,
                         });
+                        if (!mounted) return;
                         Navigator.of(context).pushReplacementNamed("homepage");
-                        print(response.user!.email);
+                        debugPrint(response.user!.email);
                       } else {
-                        print('Not Valid');
+                        debugPrint('Not Valid');
                       }
                     },
                     child: Text(

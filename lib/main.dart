@@ -6,13 +6,12 @@ import 'package:firebase_course/crud/add_note.dart';
 import 'package:firebase_course/home/home_page.dart';
 import 'package:firebase_course/test.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 bool? isLogin;
 Future backgroundMessage(RemoteMessage message) async {
-  print("${message.notification!.body}");
+  debugPrint("${message.notification!.body}");
 }
 
 void main() async {
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Note App',
       theme: ThemeData(
           primarySwatch: Colors.blue,
           textTheme: const TextTheme(
@@ -43,13 +42,13 @@ class MyApp extends StatelessWidget {
             headline5: TextStyle(fontSize: 30, color: Colors.blue),
             bodyText2: TextStyle(fontSize: 20, color: Colors.black),
           )),
-      home: //isLogin == false ? Login() : const HomePage(),
-          const Test(),
+      home: isLogin == false ? const Login() : const HomePage(),
+      //const Test(),
       routes: {
-        "login": (context) => Login(),
+        "login": (context) => const Login(),
         "homepage": (context) => const HomePage(),
         "signup": (context) => const SignUp(),
-        "addNotes": (context) => AddNotes(),
+        "addNotes": (context) => const AddNotes(),
       },
     );
   }
